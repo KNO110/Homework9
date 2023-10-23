@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string text = File.ReadAllText("C:\\Users\\2007n\\Desktop\\kobzar.txt", System.Text.Encoding.UTF8);
+        text = text.ToLower();
+
+        text = Regex.Replace(text, @"[^\w\s]", "");
+
+        string[] words = text.Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+        Dictionary<string, int> wordFrequency = new Dictionary<string, int>();
+
+        foreach (string word in words)
+        {
+            if (word.Length >= 3 && word.Length <= 20)
+            {
+                if (wordFrequency.ContainsKey(word))
+                {
+                    wordFrequency[word]++;
+                }
+                else
+                {
+                    wordFrequency[word] = 1;
+                }
+            }
+        }
+
+        var topWords = wordFrequency.OrderByDescending(kv => kv.Value).Take(50).ToList();
+
+        Console.WriteLine("Топ-50 слов из сборника \"Кобзарь\":");          //// Как сделать такой визуал таблички украл в инете:* Прошу не бить, хотел красиво
+        Console.WriteLine("┌────────────────────┬────────────┐");
+        Console.WriteLine("| Слово              | Частота    |");
+        Console.WriteLine("├────────────────────┼────────────┤");
+
+        foreach (var word in topWords)
+        {
+            Console.WriteLine($"| {word.Key,-18} | {word.Value,-10} |");
+        }
+
+        Console.WriteLine("└────────────────────┴────────────┐");
+    }
+}
